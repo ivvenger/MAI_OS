@@ -104,6 +104,7 @@
     "stack": "cpp",
     "variant": "cpp",
     "algorithm": "cpp",
-    "random.h": "c"
+    "random.h": "c",
+    "semaphore.h": "c"
   }
 }
