@@ -32,7 +32,7 @@ int main() {
     //mmap отображает эту область памяти в адресное пространство процесса, shared_mem указывает на область памяти, которую видят и родительский и дочерний процессы
     shared_data_t *shared_mem = (shared_data_t *)mmap(0, sizeof(shared_data_t), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
     if (shared_mem == MAP_FAILED) {
-        perror("Ошибка mmap");
+        perror("Ошибка mmap"); // ошибка при отображении памяти
         exit(1);
     }
     //создаём 2 семафора для уведомления дочернего процесса, что команда введенаб а второй семафор, что результат готов
@@ -41,7 +41,7 @@ int main() {
 
 
     while (1) {
-        sem_wait(sem_parent);
+        sem_wait(sem_parent); // ожидаем уведомления от родительского процесса
 
 
         if (strcmp(shared_mem->command, "выход") == 0) {
@@ -62,7 +62,7 @@ int main() {
         result = num1;
 
 
-        int division_by_zero = 0;
+        int division_by_zero = 0; // флаг для отслеживания деления на ноль
         while ((token = strtok(NULL, " ")) != NULL) {
             num2 = atoi(token);
             if (num2 == 0) {
@@ -81,14 +81,14 @@ int main() {
         }
 
 
-        fflush(file);
+        fflush(file); // принудительная запись данных в файл
         fclose(file);
         //говорим родительскому процессу, что ребёнок завершил работу
         sem_post(sem_child);
     }
 
 
-    munmap(shared_mem, sizeof(shared_data_t));
+    munmap(shared_mem, sizeof(shared_data_t)); // отключение отображения памяти
     close(shm_fd);
     sem_close(sem_parent);
     sem_close(sem_child);

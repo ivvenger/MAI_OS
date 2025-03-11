@@ -8,15 +8,15 @@
 
 
 int main() {
-    char filename[MAX_COMMAND_LEN];
-    char command[MAX_COMMAND_LEN];
+    char filename[MAX_COMMAND_LEN]; // буфер для хранения имени файла
+    char command[MAX_COMMAND_LEN]; // буфер для хранения команды (чисел для деления)
 
 
     //считываем имя файла из 1 пайпа
     read(STDIN_FILENO, filename, sizeof(filename));
 
 
-    FILE *file = fopen(filename, "a");
+    FILE *file = fopen(filename, "a"); // открываем файл, чтобы добавить туда данные
     if (file == NULL) {
         perror("Ошибка открытия файла");
         exit(1);
@@ -28,7 +28,7 @@ int main() {
         read(STDIN_FILENO, command, sizeof(command));
 
 
-        // Проверка на exit
+        // Проверка на выход
         if (strcmp(command, "выход") == 0) {
             printf("Выходим из child...\n");
             break;
@@ -55,12 +55,12 @@ int main() {
             result /= num2;
         }
         fprintf(file, "Результат деления: %d\n", result);
-        fflush(file);
+        fflush(file); // принудительная запись данных в файл
 
 
         // отправка результата в родительский процесс
-        char result_str[MAX_COMMAND_LEN];
-        sprintf(result_str, "%d", result);
+        char result_str[MAX_COMMAND_LEN]; // буфер для хранения результата в виде строки
+        sprintf(result_str, "%d", result); // преобразуем результата в строку
         write(STDOUT_FILENO, result_str, strlen(result_str) + 1);
     }
 

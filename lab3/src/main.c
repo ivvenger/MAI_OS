@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/mman.h>
+#include <sys/mman.h> // библиотека для работы с memory-mapped files
 #include <fcntl.h>
 #include <semaphore.h>
 
@@ -14,7 +14,7 @@
 #define SEM_PARENT "/sem_parent"
 #define SEM_CHILD "/sem_child"
 
-
+// структура для хранения данных в разделяемой памяти
 typedef struct {
     char filename[MAX_COMMAND_LEN];
     char command[MAX_COMMAND_LEN];
@@ -22,7 +22,7 @@ typedef struct {
 
 
 int main() {
-    //создаём разделяемую память с правами доступа 0666, где 0 - отсутстиве спец флагов, а 6 = 4 + 2, т.е. чтение плюс запись для владельца, группы и остальных
+    //создаём разделяемую память с правами доступа 0666
     int shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0666);
     if (shm_fd == -1) {
         perror("Ошибка shm_open");
@@ -32,11 +32,11 @@ int main() {
     ftruncate(shm_fd, sizeof(shared_data_t));
     //mmap отображает эту область памяти в адресное пространство процесса, shared_mem указывает на область памяти, которую видят и родительский и дочерний процессы
     shared_data_t *shared_mem = (shared_data_t *)mmap(0, sizeof(shared_data_t), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
-    if (shared_mem == MAP_FAILED) {
+    if (shared_mem == MAP_FAILED) { // ошибка при отображении памяти
         perror("Ошибка mmap");
         exit(1);
     }
-    //создаём 2 семафора для уведомления дочернего процесса, что команда введенаб а второй семафор, что результат готов
+    // создаем два семафора для синхронизации процессов
     sem_t *sem_parent = sem_open(SEM_PARENT, O_CREAT, 0666, 0);
     sem_t *sem_child = sem_open(SEM_CHILD, O_CREAT, 0666, 0);
     //делаем fork и создаём дочерний процесс
@@ -71,13 +71,13 @@ int main() {
             if (strcmp(command, "выход") == 0) {
                 break;
             }
-            //ждём выполнение дочернего процесса, 
+            //ждём выполнение дочернего процесса
             sem_wait(sem_child);
             printf("Результат деления: %s\n", shared_mem->command);
         }
 
 
-        wait(NULL);
+        wait(NULL); //ждем завершения дочернего процесса
         //закрываем все семафоры и освобождаем ресурсы
         sem_close(sem_parent);
         sem_close(sem_child);

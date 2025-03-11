@@ -11,10 +11,10 @@
 
 int main() {
     int pipe1[2], pipe2[2];
-    pid_t pid;
+    pid_t pid; // храним тут идентификатор процесса
 
 
-    // Создаём  пайп 1 и пайп2
+    // создаём  пайп1 и пайп2
     if (pipe(pipe1) == -1 || pipe(pipe2) == -1) {
         perror("Ошибка");
         exit(1);
@@ -30,12 +30,12 @@ int main() {
 
 
     if (pid == 0) {
-        // Закрываем конец для записи у 1 пайпа, и закрываем конец чтения 2 пайпа
+        // закрываем конец для записи у 1 пайпа, и закрываем конец чтения 2 пайпа
         close(pipe1[1]);
         close(pipe2[0]);
 
 
-        // Перенаправляем pipe1[0] на стандартный ввод дочернего процесса
+        // перенаправляем pipe1[0] на стандартный ввод дочернего процесса
         dup2(pipe1[0], STDIN_FILENO);
         close(pipe1[0]);
 
@@ -46,7 +46,7 @@ int main() {
 
 
         // запускаем дочерний процесс
-        execl("./child", "child", NULL);
+        execl("./child", "child", NULL); // меняем текущий процесс на новый
         perror("Ошибка");
         exit(1);
     } else {
@@ -55,17 +55,17 @@ int main() {
         close(pipe2[1]);
 
 
-        char filename[MAX_COMMAND_LEN];
+        char filename[MAX_COMMAND_LEN]; // буфер для хранения имени файла
         printf("Введите имя файла: ");
         fgets(filename, sizeof(filename), stdin);
-        filename[strcspn(filename, "\n")] = 0;
+        filename[strcspn(filename, "\n")] = 0; // удаляем символ новой строки из имени файла
 
 
         //отправляем имя файла, которое мы ввели через 1 пайп
         write(pipe1[1], filename, strlen(filename) + 1);
 
 
-        char command[MAX_COMMAND_LEN];
+        char command[MAX_COMMAND_LEN]; // буфер для хранения команды
         while (1) {
             printf("Введите числа через пробел или 'выход' для завершения : ");
             fgets(command, sizeof(command), stdin);
@@ -83,13 +83,13 @@ int main() {
 
 
             // считываем результат из child через pipe2
-            char result[MAX_COMMAND_LEN];
-            read(pipe2[0], result, sizeof(result));
+            char result[MAX_COMMAND_LEN]; // буфер для хранения результата
+            read(pipe2[0], result, sizeof(result)); // чтение результата из пайп
             printf("Результат деления: %s\n", result);
         }
 
 
-        // ожидание завершения процесса child
+        // ожидаем завершения процесса child
         wait(NULL);
         close(pipe1[1]);
         close(pipe2[0]);
