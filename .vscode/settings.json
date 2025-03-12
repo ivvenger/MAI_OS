@@ -107,6 +107,7 @@
     "random.h": "c",
     "semaphore.h": "c",
     "string.h": "c",
-    "func.h": "c"
+    "func.h": "c",
+    "stdlib.h": "c"
   }
 }
