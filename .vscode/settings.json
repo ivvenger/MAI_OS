@@ -106,6 +106,7 @@
     "algorithm": "cpp",
     "random.h": "c",
     "semaphore.h": "c",
-    "string.h": "c"
+    "string.h": "c",
+    "func.h": "c"
   }
 }
