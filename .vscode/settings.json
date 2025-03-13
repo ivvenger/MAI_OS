@@ -108,6 +108,11 @@
     "semaphore.h": "c",
     "string.h": "c",
     "func.h": "c",
-    "stdlib.h": "c"
+    "stdlib.h": "c",
+    "__hash_table": "cpp",
+    "__tree": "cpp",
+    "forward_list": "cpp",
+    "map": "cpp",
+    "unordered_map": "cpp"
   }
 }

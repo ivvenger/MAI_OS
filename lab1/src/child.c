@@ -8,8 +8,8 @@
 
 
 int main() {
-    char filename[MAX_COMMAND_LEN]; // буфер для хранения имени файла
-    char command[MAX_COMMAND_LEN]; // буфер для хранения команды (чисел для деления)
+    char filename[MAX_COMMAND_LEN]; 
+    char command[MAX_COMMAND_LEN]; 
 
 
     //считываем имя файла из 1 пайпа
