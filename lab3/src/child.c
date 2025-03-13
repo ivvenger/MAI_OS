@@ -27,7 +27,7 @@ int main() {
         perror("Ошибка shm_open");
         exit(1);
     }
-    //устанавливаем размер разделяемой памяти равный размеру созданной структуры
+    //устанавливаем размер разделяемой памяти
     ftruncate(shm_fd, sizeof(shared_data_t));
     //mmap отображает эту область памяти в адресное пространство процесса, shared_mem указывает на область памяти, которую видят и родительский и дочерний процессы
     shared_data_t *shared_mem = (shared_data_t *)mmap(0, sizeof(shared_data_t), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
@@ -81,7 +81,7 @@ int main() {
         }
 
 
-        fflush(file); // принудительная запись данных в файл
+        fflush(file); // запись данных в файл
         fclose(file);
         //говорим родительскому процессу, что ребёнок завершил работу
         sem_post(sem_child);

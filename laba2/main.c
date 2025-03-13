@@ -10,10 +10,10 @@ typedef struct {
     int experiments_per_thread;
     int start_points_first;
     int start_points_second;
-    int *draws;
+    int *draws; //счетчик ничьих
     int *first_wins;
     int *second_wins;
-    pthread_mutex_t *mutex;
+    pthread_mutex_t *mutex; //мьютекс для синхронизации
 } ThreadData;
 
 

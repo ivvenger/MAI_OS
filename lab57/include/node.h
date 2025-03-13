@@ -11,3 +11,4 @@ typedef struct {
     pid_t pid;
     void* socket;
     char endpoint[64];
+}

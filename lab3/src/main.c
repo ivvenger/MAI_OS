@@ -28,7 +28,7 @@ int main() {
         perror("Ошибка shm_open");
         exit(1);
     }
-    //устанавливаем размер разделяемой памяти равный размеру созданной структуры
+    //устанавливаем размер разделяемой памяти
     ftruncate(shm_fd, sizeof(shared_data_t));
     //mmap отображает эту область памяти в адресное пространство процесса, shared_mem указывает на область памяти, которую видят и родительский и дочерний процессы
     shared_data_t *shared_mem = (shared_data_t *)mmap(0, sizeof(shared_data_t), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
@@ -60,7 +60,6 @@ int main() {
         char command[MAX_COMMAND_LEN];
         while (1) {
             printf("Введите числа, разделенные пробелом или 'выход' для завершения: ");
-            //считываем команду из stdin
             fgets(command, sizeof(command), stdin);
             command[strcspn(command, "\n")] = 0;
             //копируем команду в shared memory
